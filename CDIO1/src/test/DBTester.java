@@ -71,6 +71,8 @@ public class DBTester {
 
 		} catch (DALException e) {
 			e.printStackTrace();
+			
+			//tis//
 		}
 	}
 
