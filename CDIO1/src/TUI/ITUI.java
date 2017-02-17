@@ -1,8 +1,10 @@
 package TUI;
 
+import dal.IUserDAO;
+
 public interface ITUI 
 {
 
-	void startOperation();
+	void startOperation(IUserDAO userDAO);
 
 }
