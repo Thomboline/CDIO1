@@ -1,4 +1,4 @@
-package TUI;
+package tui;
 
 public class Main 
 {

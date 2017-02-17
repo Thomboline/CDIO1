@@ -1,8 +1,15 @@
-package TUI;
+package tui;
 
-public interface ITUI 
+
+public interface ITUI
 {
 
 	void startOperation();
+
+    void createUser();
+    void updateUser();
+    void listUsers();
+    void deleteUser();
+    void quitProgram();
 
 }
