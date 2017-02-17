@@ -1,4 +1,4 @@
-package dto;
+package dal;
 
 public class DALException 
 {
