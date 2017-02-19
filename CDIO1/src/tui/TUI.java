@@ -80,10 +80,6 @@ public class TUI implements ITUI{
                 String ini = scan.nextLine();
                 TUI2Func.setIni(ini);
 
-                System.out.println("Type user CPR: ");
-                String CPR = scan.nextLine();
-                TUI2Func.setUserCpr(CPR);
-
                 System.out.println("============================");
                 System.out.println("|       ROLE SELECTION     |");
                 System.out.println("============================");
@@ -127,25 +123,21 @@ public class TUI implements ITUI{
                 System.out.println("|      1. User ID          |");
                 System.out.println("|      2. User name        |");
                 System.out.println("|      3. User initials    |");
-                System.out.println("|      4. User CPR         |");
-                System.out.println("|      5. Return           |");
+                System.out.println("|      4. Return           |");
                 System.out.println("============================");
 
                 int chooseUpdate = scan.nextInt();
                 switch (chooseUpdate) {
                     case 1:
-                        System.out.println("Update user ID (coming soon)");
+                        System.out.println("Update User ID (coming soon)");
                         break;
                     case 2:
-                        System.out.println("Update user name (coming soon)");
+                        System.out.println("Update User name (coming soon)");
                         break;
                     case 3:
-                        System.out.println("Update user initials (coming soon)");
+                        System.out.println("Update User initials (coming soon)");
                         break;
                     case 4:
-                        System.out.println("Update user CPR (coming soon)");
-                        break;
-                    case 5:
                         System.out.println("Returning...");
                         break display;
                 }

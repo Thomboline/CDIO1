@@ -17,9 +17,6 @@ public interface IUserDTO {
     List <String> getRoles();
     void setRoles();
     String addRole();
-    void setUserCpr(String CPR);
-    String getUserCpr();
-
 
 
 }
