@@ -8,11 +8,9 @@ import dal.IUserDAO.DALException;
 import dal.UserDAODiscImpl;
 import dto.UserDTO;
 
-public class DBTester 
-{
+public class DBTester {
 	//TODO refactor as JUnit test???
-	public static void main(String[] args) 
-	{
+	public static void main(String[] args) {
 		IUserDAO iDAO = new UserDAODiscImpl();
 		UserDTO newUser = new UserDTO();
 		printUsers(iDAO);
@@ -21,50 +19,40 @@ public class DBTester
 		newUser.addRole("Admin");
 		newUser.setUserName("testName");
 		newUser.setUserId(0);
-		try 
-		{
+		try {
 			iDAO.createUser(newUser);
-		} catch (DALException e) 
-		{
+		} catch (DALException e) {
 			e.printStackTrace();
 		}
 
-		try 
-		{
+		try {
 			iDAO.createUser(newUser);
-		} catch (DALException e1) 
-		{
+		} catch (DALException e1) {
 			System.out.println("User already existed - OK");
 		}
 	
 		newUser.setUserId(1);
 		newUser.setUserName("2ND user");
-		try 
-		{
+		try {
 			iDAO.createUser(newUser);
-		} catch (DALException e1) 
-		{
+		} catch (DALException e1) {
 			e1.printStackTrace();
 		}
 		printUsers(iDAO);
 		newUser.setUserId(0);
 		newUser.setUserName("ModifiedName");
-		try 
-		{
+		try {
 			iDAO.updateUser(newUser);
-		} catch (DALException e) 
-		{
+		} catch (DALException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		printUsers(iDAO);
 		
-		try 
-		{
+		try {
 			iDAO.deleteUser(1);
-		} catch (DALException e) 
-		{
+		} catch (DALException e) {
 			e.printStackTrace();
 		}
 		
@@ -73,8 +61,7 @@ public class DBTester
 		
 	}
 
-	private static void printUsers(IUserDAO iDAO) 
-	{
+	private static void printUsers(IUserDAO iDAO) {
 		try {
 			System.out.println("Printing users...");
 			List<UserDTO> userList = iDAO.getUserList();
@@ -84,6 +71,8 @@ public class DBTester
 
 		} catch (DALException e) {
 			e.printStackTrace();
+			
+			//tis//
 		}
 	}
 
