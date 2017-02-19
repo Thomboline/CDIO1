@@ -1,15 +1,17 @@
 package dal;
-
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JOptionPane;
-
-import java.sql.*;
-
 import dto.IUserDTO;
 import dto.UserDTO;
+import java.security.SecureRandom;
 
 public class UserDAO implements IUserDAO
 {
@@ -64,15 +66,41 @@ public class UserDAO implements IUserDAO
 		{
 			JOptionPane.showMessageDialog(null, "Sorry! Connection Failed");
 		}
-		
 		return null;
-
+		
 	}
 
 	
-	public List<UserDTO> getUserList() throws DALException 
+	public List<IUserDTO> getUserList() throws DALException 
 	{
-	  
+		try 
+		{
+			con = DriverManager.getConnection(this.url, this.user, this.password);
+		    Statement st = (Statement) con.createStatement(); 
+
+		    
+		    rs = st.executeQuery("SELECT ID, UserName, ini, CPR FROM test");
+		    
+		    ArrayList<IUserDTO> UserList = new ArrayList<>();
+		    
+		    while(rs.next())
+		    {
+		    	TempUser.setUserID(rs.getInt("ID"));
+		    	TempUser.setUserName(rs.getString("UserName"));
+		    	TempUser.setIni(rs.getString("ini"));
+		    	TempUser.setUserCpr(rs.getInt("CPR"));
+		    	
+		    	UserList.add(TempUser);
+		    }
+		    
+		    return UserList;
+		    
+		}
+		catch(SQLException ex)
+		{
+			 Logger lgr = Logger.getLogger(UserDAO.class.getName());
+		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		}
 		return null;
 	}
 
@@ -82,9 +110,19 @@ public class UserDAO implements IUserDAO
 		try 
 		{
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-		    Statement st = (Statement) con.createStatement(); 
-
+		    
+			pst = con.prepareStatement(" insert into test (ID, UserName, ini, CPR, Password)"
+			        + " values (?, ?, ?, ?, ?)");
+			
+			pst.setInt(1, user.getUserId());
+			pst.setString(2, user.getUserName());
+		    pst.setString(3, user.getIni());
+		    pst.setInt(4, user.getUserCpr());
+		    pst.setString(5, PasswordGenerator());
+			
+			/*Statement st = (Statement) con.createStatement(); 
 		    st.executeUpdate("INSERT INTO `UserTable`(ID,UserName,ini,CPR,Password) VALUE ('"+user.getUserId()+"','"+user.getUserName()+"','"+user.getIni()+"',"+user.getUserCpr()+"')");
+		    */
 		    con.close();
 		   
 		}
@@ -109,6 +147,7 @@ public class UserDAO implements IUserDAO
 		    pst.setString(2, user.getIni());
 		    pst.setInt(3, user.getUserCpr());
 		    pst.setInt(4, user.getUserId());
+		    
 		    con.close();
 		   
 		}
@@ -143,6 +182,33 @@ public class UserDAO implements IUserDAO
 
 		} 
 		
+	}
+	
+	public String PasswordGenerator()
+	{
+		String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String Characters = "0123456789._- +!?=";
+	    SecureRandom RANDOM = new SecureRandom();
+	    
+	    StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 6; ++i) 
+        {
+
+            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        String PW1 = sb.toString();
+        
+        for (int i = 0; i < 4; ++i) 
+        {
+
+            sb.append(Characters.charAt(RANDOM.nextInt(Characters.length())));
+        }
+        String PW2 = sb.toString();
+        
+        String Password = PW1 + PW2;
+        	
+		return Password;
 	}
 
 }
