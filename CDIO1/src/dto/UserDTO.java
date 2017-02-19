@@ -73,50 +73,42 @@ public class UserDTO implements Serializable, IUserDTO
 		return this.roles.remove(role);
 	}
 
-	@Override
+	
 	public String toString() 
 	{
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", ini=" + ini + ", roles=" + roles + "]";
 	}
 
 
-	@Override
-	public void getUserID() 
+
+
+	public void setUserCpr(int Cpr) 
 	{
 	
 		
 	}
 
-	@Override
-	public void setUserID(int iD) 
-	{
-		
-		
-	}
 
-
-	@Override
-	public void setUserCpr(String cPR) 
-	{
-	
-		
-	}
-
-	@Override
 	public void setUserDAO(IUserDAO userDAO) 
 	{
 	
 		
 	}
 
-	@Override
+
 	public int getUserCpr() 
 	{
 		
 		return this.CPR;
 	}
 
-	
-	
-	
+
+	public void setUserID(int iD) 
+	{
+		this.userId = iD;
+		
+	}
+
+
+
 }

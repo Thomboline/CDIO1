@@ -6,7 +6,7 @@ import dto.UserDTO;
 
 public interface IUserDAO 
 {
-	public UserDTO getUser(int userId) throws DALException;
+	public IUserDTO getUser(int userId) throws DALException;
 	public List<UserDTO> getUserList() throws DALException;
 	public void createUser(IUserDTO user) throws DALException;
 	public void updateUser(IUserDTO user) throws DALException;

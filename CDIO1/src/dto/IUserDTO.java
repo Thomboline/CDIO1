@@ -7,7 +7,7 @@ import dal.IUserDAO;
 public interface IUserDTO 
 {
 	
-	public String getUserID();
+	public int getUserId();
 	public void setUserID(int iD);
 	
 	public String getUserName();
@@ -20,7 +20,7 @@ public interface IUserDTO
 	public void setRoles(List<String> roles);
 	public void addRole(String role);
 
-	public void setUserCpr(String cPR);
+	public void setUserCpr(int Cpr);
 	public int getUserCpr();
 	public void setUserDAO(IUserDAO userDAO);
 	
