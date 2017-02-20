@@ -38,7 +38,7 @@ public class UserDAO implements IUserDAO
 		    {
 		        
 		          int id  = rs.getInt("id");
-		          int CPR = rs.getInt("CPR");
+		          String  CPR = rs.getString("CPR");
 		          String name = rs.getString("name");
 		          String ini = rs.getString("ini");
 		          
@@ -107,7 +107,7 @@ public class UserDAO implements IUserDAO
 		    		
 		    pst.setString(1, user.getUserName());
 		    pst.setString(2, user.getIni());
-		    pst.setInt(3, user.getUserCpr());
+		    pst.setString(3, user.getUserCpr());
 		    pst.setInt(4, user.getUserId());
 		    con.close();
 		   

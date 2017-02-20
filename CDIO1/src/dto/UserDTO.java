@@ -10,10 +10,11 @@ public class UserDTO implements Serializable, IUserDTO
 {
 
 	private static final long serialVersionUID = 4545864587995944260L;
-	private int	userId, CPR;                     
+	private int	userId;
 	private String userName;                
 	private String ini;                 
 	private List<String> roles;
+	private String CPR;
 	
 	//TODO Add relevant fields
 	
@@ -82,9 +83,9 @@ public class UserDTO implements Serializable, IUserDTO
 
 
 
-	public void setUserCpr(int Cpr) 
+	public void setUserCpr(String CPR)
 	{
-	
+	this.CPR = CPR;
 		
 	}
 
@@ -96,10 +97,10 @@ public class UserDTO implements Serializable, IUserDTO
 	}
 
 
-	public int getUserCpr() 
+	public String getUserCpr()
 	{
 		
-		return this.CPR;
+		return CPR;
 	}
 
 
