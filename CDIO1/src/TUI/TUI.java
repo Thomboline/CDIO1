@@ -37,7 +37,13 @@ public class TUI implements ITUI
 
              switch (input) {
                  case 1:
-                     createUser();
+				try 
+				{
+					createUser();
+				} catch (DALException e) 
+				{
+					e.printStackTrace();
+				}
                      break;
                  case 2:
                      System.out.println("Update User");
@@ -75,15 +81,15 @@ public class TUI implements ITUI
              TempUser.setUserID(ID);
 
              System.out.println("Type user name: ");
-             String name = scan.nextLine();
+             String name = scan.next();
              TempUser.setUserName(name);
 
              System.out.println("Type initials: ");
-             String ini = scan.nextLine();
+             String ini = scan.next();
              TempUser.setIni(ini);
 
              System.out.println("Type user CPR: ");
-             String CPR = scan.nextLine();
+             String CPR = scan.next();
              TempUser.setUserCpr(CPR);
 
              System.out.println("============================");
@@ -100,13 +106,13 @@ public class TUI implements ITUI
              switch (chooseRole) 
              {
                  case 1:
-                	 TempUser.addRole(); //set Operator
+                	 TempUser.addRole("Operator"); //set Operator
                      break;
                  case 2:
-                	 TempUser.addRole(); //set Foreman
+                	 TempUser.addRole("Foreman"); //set Foreman
                      break;
                  case 3:
-                	 TempUser.addRole(); //set Pharmacist
+                	 TempUser.addRole("Pharmacist"); //set Pharmacist
                      break;
                  case 4:
                      System.out.println("Returning...");
@@ -115,6 +121,7 @@ public class TUI implements ITUI
                      System.out.println("Invalid entry");
                      break;
              }
+            break;
          }
 	 	userDAO.createUser(TempUser);
      }
