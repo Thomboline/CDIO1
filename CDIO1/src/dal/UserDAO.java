@@ -18,7 +18,8 @@ public class UserDAO implements IUserDAO
 	private java.sql.Connection con = null;
 	private PreparedStatement pst = null;
 	private ResultSet rs = null;
-	private String url = "jdbc:mysql://localhost:8889/deliveryEarn";
+	private String driver = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/cdio1";
 	private String user = "root";
 	private String password = "root";
 	
@@ -33,18 +34,18 @@ public class UserDAO implements IUserDAO
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 		    Statement st = (Statement) con.createStatement(); 
 
-		    
+
 		    rs = st.executeQuery("SELECT * FROM test where id = " + userId + "");
 		    
 		    while(rs.next())
 		    {
 		        
 		          int id  = rs.getInt("id");
-		          String  CPR = rs.getString("CPR");
+		          String CPR = rs.getString("CPR");
 		          String name = rs.getString("name");
 		          String ini = rs.getString("ini");
 		          
-		          TempUser.setUserId(userId);
+		          TempUser.setUserID(id);
 		          TempUser.setUserCpr(CPR);
 		          TempUser.setUserName(name);
 		          TempUser.setIni(ini);
@@ -88,7 +89,7 @@ public class UserDAO implements IUserDAO
 		    	TempUser.setUserID(rs.getInt("ID"));
 		    	TempUser.setUserName(rs.getString("UserName"));
 		    	TempUser.setIni(rs.getString("ini"));
-		    	TempUser.setUserCpr(rs.getInt("CPR"));
+		    	TempUser.setUserCpr(rs.getString("CPR"));
 		    	
 		    	UserList.add(TempUser);
 		    }
@@ -108,17 +109,17 @@ public class UserDAO implements IUserDAO
 	public void createUser(IUserDTO user) throws DALException 
 	{
 		try 
-		{
+		{	
+			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-		    
-			pst = con.prepareStatement(" insert into test (ID, UserName, ini, CPR, Password)"
-			        + " values (?, ?, ?, ?, ?)");
+			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Cpr)"
+			        + " values (?, ?, ?, ?)");
 			
 			pst.setInt(1, user.getUserId());
 			pst.setString(2, user.getUserName());
 		    pst.setString(3, user.getIni());
-		    pst.setInt(4, user.getUserCpr());
-		    pst.setString(5, PasswordGenerator());
+		    pst.setString(4, user.getUserCpr());
+		    //pst.setString(5, PasswordGenerator());
 			
 			/*Statement st = (Statement) con.createStatement(); 
 		    st.executeUpdate("INSERT INTO `UserTable`(ID,UserName,ini,CPR,Password) VALUE ('"+user.getUserId()+"','"+user.getUserName()+"','"+user.getIni()+"',"+user.getUserCpr()+"')");
@@ -127,12 +128,11 @@ public class UserDAO implements IUserDAO
 		   
 		}
 
-		catch (SQLException ex) 
+		catch (SQLException | ClassNotFoundException ex) 
 		{
 		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
 		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
-		} 
-		
+		}
 	}
 	
 	
@@ -143,10 +143,10 @@ public class UserDAO implements IUserDAO
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 		    pst = con.prepareStatement("UPDATE test SET UserName = ? , ini =? , CPR =?, WHERE ID LIKE ? ");
 		    		
-		    pst.setString(1, user.getUserName());
-		    pst.setString(2, user.getIni());
+//		    pst.setString(1, user.getUserName());
+//		    pst.setString(2, user.getIni());
 		    pst.setString(3, user.getUserCpr());
-		    pst.setInt(4, user.getUserId());
+//		    pst.setInt(4, user.getUserId());
 		    
 		    con.close();
 		   
