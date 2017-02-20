@@ -143,10 +143,10 @@ public class UserDAO implements IUserDAO
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 		    pst = con.prepareStatement("UPDATE test SET UserName = ? , ini =? , CPR =?, WHERE ID LIKE ? ");
 		    		
-//		    pst.setString(1, user.getUserName());
-//		    pst.setString(2, user.getIni());
+		    pst.setString(1, user.getUserName());
+		    pst.setString(2, user.getIni());
 		    pst.setString(3, user.getUserCpr());
-//		    pst.setInt(4, user.getUserId());
+		    pst.setInt(4, user.getUserId());
 		    
 		    con.close();
 		   

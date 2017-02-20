@@ -40,19 +40,15 @@ public class TUI implements ITUI
 					 createUser();
                      break;
                  case 2:
-                     System.out.println("Update User");
                      updateUser();
                      break;
                  case 3:
-                     System.out.println("Delete User");
                      deleteUser();
                      break;
                  case 4:
-                     System.out.println("List Users");
                      listUsers();
                      break;
                  case 5:
-                     System.out.println("System closed");
                      quitProgram();
                      break;
                  default:
@@ -144,18 +140,50 @@ public class TUI implements ITUI
                  System.out.println("============================");
 
                  int chooseUpdate = scan.nextInt();
+                 int ID;
+
                  switch (chooseUpdate) {
                      case 1:
-                         System.out.println("Update user ID (coming soon)");
+                         System.out.println("============================");
+                         System.out.println("|      UPDATE USER ID      |");
+                         System.out.println("============================");
+                         System.out.println("Enter user ID: ");
+                         ID = scan.nextInt();
+                         System.out.println("Enter new user ID: ");
+                         int newID = scan.nextInt();
+                         userDAO.getUser(ID).setUserID(newID);
+
+                         userDAO.updateUser(userDAO.getUser(ID));
                          break;
                      case 2:
-                         System.out.println("Update user name (coming soon)");
+                         System.out.println("============================");
+                         System.out.println("|     UPDATE USER NAME     |");
+                         System.out.println("============================");
+                         System.out.println("Enter user ID: ");
+                         ID = scan.nextInt();
+                         System.out.println("Enter new user name: ");
+                         String newName = scan.next();
+                         userDAO.getUser(ID).setUserName(newName);
                          break;
                      case 3:
-                         System.out.println("Update user initials (coming soon)");
+                         System.out.println("============================");
+                         System.out.println("|   UPDATE USER INITIALS   |");
+                         System.out.println("============================");
+                         System.out.println("Enter user ID: ");
+                         ID = scan.nextInt();
+                         System.out.println("Enter new user initials: ");
+                         String newIni = scan.next();
+                         userDAO.getUser(ID).setIni(newIni);
                          break;
                      case 4:
-                         System.out.println("Update user CPR (coming soon)");
+                         System.out.println("============================");
+                         System.out.println("|      UPDATE USER CPR     |");
+                         System.out.println("============================");
+                         System.out.println("Enter User ID: ");
+                         ID = scan.nextInt();
+                         System.out.println("Enter new user CPR: ");
+                         String newCPR = scan.next();
+                         userDAO.getUser(ID).setUserCpr(newCPR);
                          break;
                      case 5:
                          System.out.println("Update user password (coming soon)");
@@ -178,7 +206,10 @@ public class TUI implements ITUI
             System.out.println("============================");
             System.out.println("|       LIST USERS         |");
             System.out.println("============================");
-            userDAO.getUserList().indexOf(0);
+
+
+            for (int i = 0; i < userDAO.getUserList().size(); i++)
+                System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() +  "\t User name: " + userDAO.getUserList().get(i).getUserName());
 
         } catch (Exception e)
         {
@@ -193,9 +224,9 @@ public class TUI implements ITUI
              System.out.println("|       DELETE USER        |");
              System.out.println("============================");
              System.out.println("Enter user ID: ");
-
              int ID = scan.nextInt();
              userDAO.deleteUser(ID);
+             System.out.println("User has been deleted");
 
          } catch (Exception e)
          {
