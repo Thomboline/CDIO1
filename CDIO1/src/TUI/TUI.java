@@ -124,6 +124,7 @@ public class TUI implements ITUI
             break;
          }
 	 	userDAO.createUser(TempUser);
+	 	userDAO.getUserList().get(0).
      }
 	 
      public void updateUser()
