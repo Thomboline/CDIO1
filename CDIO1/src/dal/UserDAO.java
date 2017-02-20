@@ -42,7 +42,7 @@ public class UserDAO implements IUserDAO
 		          String name = rs.getString("name");
 		          String ini = rs.getString("ini");
 		          
-		          TempUser.setUserID(id);
+		          TempUser.setUserId(userId);
 		          TempUser.setUserCpr(CPR);
 		          TempUser.setUserName(name);
 		          TempUser.setIni(ini);

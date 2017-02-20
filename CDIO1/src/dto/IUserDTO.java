@@ -8,7 +8,7 @@ public interface IUserDTO
 {
 	
 	public int getUserId();
-	public void setUserID(int iD);
+	public void setUserId(int iD);
 	
 	public String getUserName();
 	public void setUserName(String name);

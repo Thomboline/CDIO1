@@ -48,8 +48,17 @@ public class UserDTO implements Serializable, IUserDTO
 	{
 		this.ini = ini;
 	}
+    public void setUserCpr(String CPR)
+    {
+        this.Cpr = CPR;
+    }
+    public String getUserCpr()
+    {
+        return Cpr;
+    }
 
-	public List<String> getRoles() 
+
+    public List<String> getRoles()
 	{
 		return roles;
 	}
@@ -82,14 +91,6 @@ public class UserDTO implements Serializable, IUserDTO
 
 
 
-	public String getUserCpr()
-	{
-		return Cpr;
-	}
-	public void setUserCpr(String CPR)
-	{
-		this.Cpr = Cpr;
-	}
 
 
 	public void setUserDAO(IUserDAO userDAO) 
@@ -98,12 +99,6 @@ public class UserDTO implements Serializable, IUserDTO
 		
 	}
 
-
-	public void setUserID(int iD) 
-	{
-		this.userId = iD;
-		
-	}
 
 
 
