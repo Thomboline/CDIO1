@@ -132,7 +132,8 @@ public class TUI implements ITUI
              System.out.println("|      2. User name        |");
              System.out.println("|      3. User initials    |");
              System.out.println("|      4. User CPR         |");
-             System.out.println("|      5. Return           |");
+             System.out.println("|      5. User Password    |");
+             System.out.println("|      6. Return           |");
              System.out.println("============================");
 
              int chooseUpdate = scan.nextInt();
@@ -151,6 +152,9 @@ public class TUI implements ITUI
                      System.out.println("Update user CPR (coming soon)");
                      break;
                  case 5:
+                     System.out.println("Update user password (coming soon)");
+                     break;
+                 case 6:
                      System.out.println("Returning...");
                      break display;
              }

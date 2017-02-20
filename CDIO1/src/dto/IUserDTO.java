@@ -8,7 +8,7 @@ public interface IUserDTO
 {
 	
 	public int getUserId();
-	public void setUserID(int iD);
+	public void setUserId(int iD);
 	
 	public String getUserName();
 	public void setUserName(String name);
@@ -20,7 +20,7 @@ public interface IUserDTO
 	public void setRoles(List<String> roles);
 	public void addRole(String role);
 
-	public void setUserCpr(int Cpr);
+	public void setUserCpr(String CPR);
 	public int getUserCpr();
 	public void setUserDAO(IUserDAO userDAO);
 	
