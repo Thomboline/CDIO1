@@ -9,8 +9,6 @@ public class Main
 		ITUI userInterface = new TUI();
 		userInterface.startOperation(new UserDAO());
 		
-		
-		
 	}
 
 }

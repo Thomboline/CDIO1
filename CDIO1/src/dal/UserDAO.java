@@ -80,7 +80,7 @@ public class UserDAO implements IUserDAO
 		    Statement st = (Statement) con.createStatement(); 
 
 		    
-		    rs = st.executeQuery("SELECT ID, UserName, ini, CPR FROM test");
+		    rs = st.executeQuery("SELECT ID, UserName, ini, CPR FROM cdio1");
 		    
 		    ArrayList<IUserDTO> UserList = new ArrayList<>();
 		    
@@ -112,14 +112,15 @@ public class UserDAO implements IUserDAO
 		{	
 			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Cpr)"
-			        + " values (?, ?, ?, ?)");
+			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Cpr, Password)"
+			        + " values (?, ?, ?, ?, ?)");
 			
 			pst.setInt(1, user.getUserId());
 			pst.setString(2, user.getUserName());
 		    pst.setString(3, user.getIni());
 		    pst.setString(4, user.getUserCpr());
-		    //pst.setString(5, PasswordGenerator());
+		    pst.setString(5, PasswordGenerator());
+		    pst.execute();
 			
 			/*Statement st = (Statement) con.createStatement(); 
 		    st.executeUpdate("INSERT INTO `UserTable`(ID,UserName,ini,CPR,Password) VALUE ('"+user.getUserId()+"','"+user.getUserName()+"','"+user.getIni()+"',"+user.getUserCpr()+"')");
