@@ -14,7 +14,7 @@ public class UserDTO implements Serializable, IUserDTO
 	private String userName;                
 	private String ini;                 
 	private List<String> roles;
-	private String CPR;
+	private String Cpr;
 	
 	//TODO Add relevant fields
 	
@@ -82,11 +82,13 @@ public class UserDTO implements Serializable, IUserDTO
 
 
 
-
+	public String getUserCpr()
+	{
+		return Cpr;
+	}
 	public void setUserCpr(String CPR)
 	{
-	this.CPR = CPR;
-		
+		this.Cpr = Cpr;
 	}
 
 
@@ -94,13 +96,6 @@ public class UserDTO implements Serializable, IUserDTO
 	{
 	
 		
-	}
-
-
-	public String getUserCpr()
-	{
-		
-		return CPR;
 	}
 
 
