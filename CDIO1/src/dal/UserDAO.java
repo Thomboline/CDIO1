@@ -35,15 +35,15 @@ public class UserDAO implements IUserDAO
 		    Statement st = (Statement) con.createStatement(); 
 
 
-		    rs = st.executeQuery("SELECT * FROM test where id = " + userId + "");
+		    rs = st.executeQuery("SELECT * FROM personale where UserID = " + userId + "");
 		    
 		    while(rs.next())
 		    {
 		        
-		          int id  = rs.getInt("id");
-		          String CPR = rs.getString("CPR");
-		          String name = rs.getString("name");
-		          String ini = rs.getString("ini");
+		          int id  = rs.getInt("UserID");
+		          String CPR = rs.getString("Cpr");
+		          String name = rs.getString("Username");
+		          String ini = rs.getString("Ini");
 		          
 		          TempUser.setUserID(id);
 		          TempUser.setUserCpr(CPR);
@@ -80,16 +80,17 @@ public class UserDAO implements IUserDAO
 		    Statement st = (Statement) con.createStatement(); 
 
 		    
-		    rs = st.executeQuery("SELECT ID, UserName, ini, CPR FROM cdio1");
+		    rs = st.executeQuery("SELECT UserID, Username, Ini, Cpr FROM personale");
 		    
 		    ArrayList<IUserDTO> UserList = new ArrayList<>();
 		    
 		    while(rs.next())
 		    {
-		    	TempUser.setUserID(rs.getInt("ID"));
-		    	TempUser.setUserName(rs.getString("UserName"));
-		    	TempUser.setIni(rs.getString("ini"));
-		    	TempUser.setUserCpr(rs.getString("CPR"));
+		    	this.TempUser = new UserDTO();
+		    	TempUser.setUserID(rs.getInt("UserID"));
+		    	TempUser.setUserName(rs.getString("Username"));
+		    	TempUser.setIni(rs.getString("Ini"));
+		    	TempUser.setUserCpr(rs.getString("Cpr"));
 		    	
 		    	UserList.add(TempUser);
 		    }
@@ -142,12 +143,14 @@ public class UserDAO implements IUserDAO
 		try 
 		{
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-		    pst = con.prepareStatement("UPDATE test SET UserName = ? , ini =? , CPR =?, WHERE ID LIKE ? ");
-		    		
+		    pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Cpr =? " + " WHERE UserID = ? ");
+		    
+
 		    pst.setString(1, user.getUserName());
 		    pst.setString(2, user.getIni());
 		    pst.setString(3, user.getUserCpr());
 		    pst.setInt(4, user.getUserId());
+		    pst.execute();
 		    
 		    con.close();
 		   
@@ -167,16 +170,18 @@ public class UserDAO implements IUserDAO
 	{
 		try 
 		{
+			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 			
-		    pst = con.prepareStatement("delete from users where id = ?");
+		    pst = con.prepareStatement("delete from personale where UserID = ?");
 		    pst.setInt(1, userId);
+		    pst.execute();
 		    
 		    con.close();
 		   
 		}
 
-		catch (SQLException ex) 
+		catch (SQLException | ClassNotFoundException ex) 
 		{
 		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
 		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -188,7 +193,7 @@ public class UserDAO implements IUserDAO
 	public String PasswordGenerator()
 	{
 		String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String Characters = "0123456789._- +!?=";
+		String Characters = "0123456789._-+!?=";
 	    SecureRandom RANDOM = new SecureRandom();
 	    
 	    StringBuilder sb = new StringBuilder();

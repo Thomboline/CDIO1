@@ -152,7 +152,7 @@ public class TUI implements ITUI
                          System.out.println("Enter new user ID: ");
                          int newID = scan.nextInt();
                          userDAO.getUser(ID).setUserID(newID);
-
+                         
                          userDAO.updateUser(userDAO.getUser(ID));
                          break;
                      case 2:
@@ -163,7 +163,11 @@ public class TUI implements ITUI
                          ID = scan.nextInt();
                          System.out.println("Enter new user name: ");
                          String newName = scan.next();
-                         userDAO.getUser(ID).setUserName(newName);
+                         this.TempUser = userDAO.getUser(ID);
+                         System.out.println("Bruger " +this.TempUser.getUserName());
+                         this.TempUser.setUserName(newName);
+                         System.out.println("Bruger " +this.TempUser.getUserName());
+                         userDAO.updateUser(this.TempUser);
                          break;
                      case 3:
                          System.out.println("============================");
@@ -207,7 +211,8 @@ public class TUI implements ITUI
             System.out.println("|       LIST USERS         |");
             System.out.println("============================");
 
-
+            userDAO.getUserList();
+            System.out.println("Bruger 1 " + userDAO.getUserList().get(1).getUserName());
             for (int i = 0; i < userDAO.getUserList().size(); i++)
                 System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() +  "\t User name: " + userDAO.getUserList().get(i).getUserName());
 
