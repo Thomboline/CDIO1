@@ -113,14 +113,15 @@ public class UserDAO implements IUserDAO
 		{	
 			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Cpr, Password)"
-			        + " values (?, ?, ?, ?, ?)");
+			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Roles, Cpr, Password)"
+			        + " values (?, ?, ?, ?, ?, ?)");
 			
 			pst.setInt(1, user.getUserId());
 			pst.setString(2, user.getUserName());
 		    pst.setString(3, user.getIni());
-		    pst.setString(4, user.getUserCpr());
-		    pst.setString(5, PasswordGenerator());
+		    pst.setString(4, user.getRoles().get(0));
+		    pst.setString(5, user.getUserCpr());
+		    pst.setString(6, PasswordGenerator());
 		    pst.execute();
 			
 			/*Statement st = (Statement) con.createStatement(); 
