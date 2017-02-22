@@ -1,16 +1,15 @@
 package dal;
 import java.util.List;
-
 import dto.IUserDTO;
-import dto.UserDTO;
 
 public interface IUserDAO 
 {
 	public IUserDTO getUser(int userId) throws DALException;
 	public List<IUserDTO> getUserList() throws DALException;
 	public void createUser(IUserDTO user) throws DALException;
-	public void updateUser(IUserDTO user) throws DALException;
+	public void updateUser(IUserDTO user, int option) throws DALException;
 	public void deleteUser(int userId) throws DALException;
+	public String PasswordGenerator() throws DALException;
 	
 	public class DALException extends Exception 
 	{

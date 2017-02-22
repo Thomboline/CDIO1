@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import dal.IUserDAO;
-
 public class UserDTO implements Serializable, IUserDTO
 {
 
@@ -55,12 +53,6 @@ public class UserDTO implements Serializable, IUserDTO
 		this.roles.add(role);
 	}
 	
-
-	/**
-	 * 
-	 * @param role
-	 * @return true if role existed, false if not
-	 */
 	public boolean removeRole(String role)
 	{
 		return this.roles.remove(role);
@@ -80,24 +72,13 @@ public class UserDTO implements Serializable, IUserDTO
 		this.CPR = Cpr;
 	}
 
-
-	public void setUserDAO(IUserDAO userDAO) 
-	{
-	
-		
-	}
-
-
 	public String getUserCpr() 
 	{
 		return this.CPR;
 	}
-
-
 	
 	public int getUserId() 
 	{
-	
 		return this.userId;
 	}
 

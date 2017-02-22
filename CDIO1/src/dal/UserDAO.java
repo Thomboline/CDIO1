@@ -138,19 +138,40 @@ public class UserDAO implements IUserDAO
 	}
 	
 	
-	public void updateUser(IUserDTO user) throws DALException
+	public void updateUser(IUserDTO user, int option) throws DALException
 	{
 		try 
 		{
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-		    pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Cpr =? " + " WHERE UserID = ? ");
-		    
-
-		    pst.setString(1, user.getUserName());
-		    pst.setString(2, user.getIni());
-		    pst.setString(3, user.getUserCpr());
-		    pst.setInt(4, user.getUserId());
-		    pst.execute();
+			
+			if(option==1)
+			{
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Cpr =? " + " WHERE UserID = ? ");
+			    
+			    pst.setString(1, user.getUserName());
+			    pst.setString(2, user.getIni());
+			    pst.setString(3, user.getUserCpr());
+			    pst.setInt(4, user.getUserId());
+			    pst.execute();
+			}
+			else if (option==2)
+			{
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , UserID =? " + " WHERE Cpr = ? ");
+			    
+			    pst.setString(1, user.getUserName());
+			    pst.setString(2, user.getIni());
+			    pst.setInt(3, user.getUserId());
+			    pst.setString(4, user.getUserCpr());
+			    pst.execute();
+			}
+			else if (option==3)
+			{
+				pst = con.prepareStatement("UPDATE personale SET Password = ?  " + " WHERE UserID = ? ");
+			    
+			    pst.setString(1, PasswordGenerator());
+			    pst.setInt(2, user.getUserId());
+			    pst.execute();
+			}
 		    
 		    con.close();
 		   

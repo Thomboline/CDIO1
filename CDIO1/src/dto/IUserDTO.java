@@ -2,8 +2,6 @@ package dto;
 
 import java.util.List;
 
-import dal.IUserDAO;
-
 public interface IUserDTO 
 {
 	
@@ -22,6 +20,5 @@ public interface IUserDTO
 
 	public void setUserCpr(String Cpr);
 	public String getUserCpr();
-	public void setUserDAO(IUserDAO userDAO);
 	
 }
