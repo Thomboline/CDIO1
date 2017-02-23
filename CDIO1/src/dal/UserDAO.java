@@ -39,7 +39,6 @@ public class UserDAO implements IUserDAO
 		    
 		    while(rs.next())
 		    {
-		        
 		          int id  = rs.getInt("UserID");
 		          String CPR = rs.getString("Cpr");
 		          String name = rs.getString("Username");
@@ -49,13 +48,6 @@ public class UserDAO implements IUserDAO
 		          TempUser.setUserCpr(CPR);
 		          TempUser.setUserName(name);
 		          TempUser.setIni(ini);
-		          
-		          /*
-		          System.out.print("ID: " + id);
-		          System.out.print(", name: " + name);
-		          System.out.print(", ini: " + ini);
-		          System.out.println(", CPR: " + CPR);
-		          */
 		     }
 		    
 		    con.close();
@@ -99,7 +91,8 @@ public class UserDAO implements IUserDAO
 		    
 		}
 		catch(SQLException ex)
-		{
+		{	
+			
 			 Logger lgr = Logger.getLogger(UserDAO.class.getName());
 		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
 		}
@@ -132,9 +125,14 @@ public class UserDAO implements IUserDAO
 		}
 
 		catch (SQLException | ClassNotFoundException ex) 
-		{
-		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		{	
+			if (((SQLException)ex).getErrorCode() == DALException.duplicateErrorCode) {
+				System.out.println(DALException.duplicateData);
+			}
+			else {
+			throw new DALException(DALException.wrongData);
+			}
+		
 		}
 	}
 	
@@ -204,9 +202,10 @@ public class UserDAO implements IUserDAO
 		}
 
 		catch (SQLException | ClassNotFoundException ex) 
-		{
-		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		{	
+			throw new DALException("");
+//		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
+//		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
 		} 
 		

@@ -70,90 +70,35 @@ public class TUI implements ITUI
 	}
 		
 	
-	
-	 public void createUser() throws SQLException {
-//         try {
+	//Create user metode. Benytter sig af createUserIteration() til de forskellige trin.
+	public void createUser() {
 
 		int step = 1;
 		boolean cont = true;
 
-		//display:
+		System.out.println("============================");
+		System.out.println("|        CREATE USER       |");
+		System.out.println("============================\n");
+		
 		while (cont) {
-			System.out.println("============================");
-			System.out.println("|        CREATE USER       |");
-			System.out.println("============================\n");
 
-			// try {
-			// System.out.println("Type userID: ");
-			// int ID = scan.nextInt();
-			// TempUser.setUserID(ID);
-			// } catch(InputMismatchException e) {
-			// System.out.println("Input mismatch. Please try again.\n");
-			// scan.nextLine();
-			// }
 			try {
 				cont = createUserIteration(step);
 				step++;
 			} catch (TUIException e) {
 				step = e.getType();
 				System.out.println(e.getMessage());
-				//e.printStackTrace();
 			}
-
-//			System.out.println("Type user name: ");
-//			String name = scan2.nextLine();
-//
-//			TempUser.setUserName(name);
-//
-//			System.out.println("Type initials: ");
-//			String ini = scan.next();
-//			TempUser.setIni(ini);
-//
-//			System.out.println("Type user CPR: ");
-//			String CPR = scan.next();
-//			TempUser.setUserCpr(CPR);
-//
-//			System.out.println("============================");
-//			System.out.println("|       ROLE SELECTION     |");
-//			System.out.println("============================");
-//			System.out.println("| Roles:                   |");
-//			System.out.println("|      1. Operator         |");
-//			System.out.println("|      2. Foreman          |");
-//			System.out.println("|      3. Pharmacist       |");
-//			System.out.println("|      4. Return           |");
-//			System.out.println("============================");
-//
-//			int chooseRole = scan.nextInt();
-//			switch (chooseRole) {
-//			case 1:
-//				TempUser.addRole("Operator"); // set Operator
-//				break;
-//			case 2:
-//				TempUser.addRole("Foreman"); // set Foreman
-//				break;
-//			case 3:
-//				TempUser.addRole("Pharmacist"); // set Pharmacist
-//				break;
-//			case 4:
-//				System.out.println("Returning...");
-//				break display;
-//			default:
-//				System.out.println("Invalid entry");
-//				break;
-//			}
-//
-//			break;
 		}
+
 		try {
 			userDAO.createUser(TempUser);
 		} catch (DALException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
-
-
-	 
+	
      public void updateUser()
      {
          try {
@@ -267,41 +212,51 @@ public class TUI implements ITUI
      }
 
      
-     public void listUsers(){
-	    try {
-            System.out.println("============================");
-            System.out.println("|       LIST USERS         |");
-            System.out.println("============================");
+	public void listUsers() {
+		try {
+			System.out.println("============================");
+			System.out.println("|       LIST USERS         |");
+			System.out.println("============================");
 
-//            userDAO.getUserList();
-            //System.out.println("Bruger 1 " + userDAO.getUserList().get(1).getUserName());
-            for (int i = 0; i < userDAO.getUserList().size(); i++)
-                System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() +  "\t User name: " + userDAO.getUserList().get(i).getUserName());
+			for (int i = 0; i < userDAO.getUserList().size(); i++)
+				System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() + "\t User name: "
+						+ userDAO.getUserList().get(i).getUserName());
 
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-     }
-
-     public void deleteUser(){
-         try {
-
-             System.out.println("============================");
-             System.out.println("|       DELETE USER        |");
-             System.out.println("============================");
-             System.out.println("Enter user ID: ");
-             int ID = scan.nextInt();
-             userDAO.deleteUser(ID);
-             System.out.println("User has been deleted");
-
-         } catch (Exception e)
-         {
-             e.printStackTrace();
-         }
-     }
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
+	}
      
-	public boolean createUserIteration(int step) throws TUIException, SQLException {
+	public void listID() {
+		try {
+			System.out.print("Unavailable user IDs: {");
+			for (int i = 0; i < userDAO.getUserList().size(); i++) {
+				System.out.print(userDAO.getUserList().get(i).getUserId() + ", ");
+			}
+			System.out.print("...}");
+			System.out.println();
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteUser() {
+		try {
+
+			System.out.println("============================");
+			System.out.println("|       DELETE USER        |");
+			System.out.println("============================");
+			System.out.println("Enter user ID: ");
+			int ID = scan.nextInt();
+			userDAO.deleteUser(ID);
+			System.out.println("User has been deleted");
+
+		} catch (DALException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+     
+	public boolean createUserIteration(int step) throws TUIException {
 
 		boolean cont = true;
 		String errorMessage = null;
@@ -311,42 +266,32 @@ public class TUI implements ITUI
 			switch (step) {
 
 			case 1:
-
 				errorMessage = "Input mismatch. Please try again.\n";
+				listID();
 				System.out.println("Type userID: ");
 				int ID = scan.nextInt();
 				TempUser.setUserID(ID);
-
 				break;
 
 			case 2:
-				errorMessage = "Your name must not exceed 20 characters.";
 				System.out.println("Type user name: ");
 				String name = scan2.nextLine();
 				TempUser.setUserName(name);
-
 				break;
 
 			case 3:
-
-				errorMessage = "Your initials must be exactly 3 characters.";
 				System.out.println("Type initials: ");
 				String ini = scan.next();
 				TempUser.setIni(ini);
-
 				break;
 
 			case 4:
-
-				errorMessage = "Your CPR must be exactly 10 characters. Avoid using dash '-'.";
 				System.out.println("Type user CPR: ");
 				String CPR = scan.next();
 				TempUser.setUserCpr(CPR);
-
 				break;
 
 			case 5:
-
 				System.out.println("============================");
 				System.out.println("|       ROLE SELECTION     |");
 				System.out.println("============================");
@@ -386,10 +331,7 @@ public class TUI implements ITUI
 		} catch (InputMismatchException e) {
 			scan.nextLine();
 			throw new TUIException(errorMessage, step);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new SQLException();
-		}
+		} 
 		return cont;
 	}
 
