@@ -11,7 +11,6 @@ public class TUI implements ITUI
 {
 	private IUserDAO userDAO;
 	IUserDTO TempUser = new UserDTO();
-
     int input;
 
     Scanner scan = new Scanner(System.in);
@@ -141,8 +140,10 @@ public class TUI implements ITUI
 
                  int chooseUpdate = scan.nextInt();
                  int ID;
-
-                 switch (chooseUpdate) {
+                 boolean a = true;
+                 String newRole = null;
+                 
+				switch (chooseUpdate) {
                      case 1:
                          System.out.println("============================");
                          System.out.println("|      UPDATE USER ID      |");
@@ -193,6 +194,35 @@ public class TUI implements ITUI
                          
                          break;
                      case 4:
+                    	 System.out.println("============================");
+                         System.out.println("|        UPDATE ROLE       |");
+                         System.out.println("============================");
+                         
+                         System.out.println("Enter user ID: ");
+                         ID = scan.nextInt();
+                         
+                         while(a)
+                         {
+                        	 System.out.println("Enter new role: ");
+                             newRole = scan.nextLine();
+                             
+                             if(newRole != "Admin"|| newRole != "Operator" || newRole != "Foreman" || newRole != "Pharmacist")
+                             {
+                            	 System.out.println("Unknown role, please try again!");
+                             }
+                             else
+                             {
+                            	 a = false;
+                             }
+                        	 
+                         }
+                         
+                         
+                         this.TempUser = userDAO.getUser(ID);
+                         this.TempUser.setRoles(newRole);
+                         userDAO.updateUser(this.TempUser, 1);
+                    	 
+                     case 5:
                          System.out.println("============================");
                          System.out.println("|      UPDATE USER CPR     |");
                          System.out.println("============================");
@@ -208,7 +238,7 @@ public class TUI implements ITUI
                          userDAO.updateUser(this.TempUser, 1);
                          
                          break;
-                     case 5:
+                     case 6:
                     	 System.out.println("============================");
                          System.out.println("|    UPDATE USER PASSWORD   |");
                          System.out.println("============================");
@@ -220,7 +250,7 @@ public class TUI implements ITUI
                          userDAO.updateUser(this.TempUser, 3);
                          
                          break;
-                     case 6:
+                     case 7:
                          System.out.println("Returning...");
                          break display;
                  }
