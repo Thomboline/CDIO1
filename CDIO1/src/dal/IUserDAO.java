@@ -13,12 +13,16 @@ public interface IUserDAO
 	
 	public class DALException extends Exception 
 	{
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 7355418246336739229L;
-
+		public static final int duplicateErrorCode = 1062;
+		public static final String duplicateData = "You have entered an ID or username that is already in use.\nPlease try again.";
+		public static final String wrongData = "Something went wrong. Beware of input syntax:"
+				+ "\nUserID: {0, 1, 2..... 9}. Interval [1,99]."
+				+ "\nUser name: All characters. Max 20 characters."
+				+ "\nInitials: All characters. Max 4 characters."
+				+ "\nCPR: {0, 1, 2..... 9}. Exactly 11 characters are required. Syntax: 12345678-1234"
+				+ "\nPlease try again.\n";
+		
 		public DALException(String msg, Throwable e) 
 		{
 			super(msg,e);

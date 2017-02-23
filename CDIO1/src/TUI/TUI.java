@@ -1,5 +1,6 @@
 package TUI;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import dal.IUserDAO;
@@ -11,15 +12,19 @@ public class TUI implements ITUI
 {
 	private IUserDAO userDAO;
 	IUserDTO TempUser = new UserDTO();
+
     int input;
 
     Scanner scan = new Scanner(System.in);
     Scanner scan2 = new Scanner(System.in);
 	
-	public void startOperation(IUserDAO userDAO) 
-	{
-		this.userDAO = userDAO;
-		 do {
+	public void startOperation (IUserDAO userDAO)
+	{	
+		
+		do {
+			try {
+			this.userDAO = userDAO;
+		
              System.out.println("============================");
              System.out.println("|       MENU SELECTION     |");
              System.out.println("============================");
@@ -30,9 +35,9 @@ public class TUI implements ITUI
              System.out.println("|        4. List Users     |");
              System.out.println("|        5. Exit           |");
              System.out.println("============================");
-
+             
              input = scan.nextInt();
-
+             	 
              switch (input) {
                  case 1:
 					 createUser();
@@ -53,72 +58,46 @@ public class TUI implements ITUI
                      System.out.println("Invalid entry");
                      break;
              }
-
-         } while (input != 5);
-     }
+        
+			} catch (InputMismatchException e) {
+				System.out.println("Input mismatch. Please try again.");
+	   		} 
+			
+			scan.nextLine();
+			
+		} while (input != 5);			
+	}
+		
 	
-	 public void createUser() {
-         try {
+	//Create user metode. Benytter sig af createUserIteration() til de forskellige trin.
+	public void createUser() {
 
+		int step = 1;
+		boolean cont = true;
 
-             display:
-             while (true) {
-                 System.out.println("Create User");
-                 System.out.println("Type userID: ");
-                 int ID = scan.nextInt();
-                 TempUser.setUserID(ID);
+		System.out.println("============================");
+		System.out.println("|        CREATE USER       |");
+		System.out.println("============================\n");
+		
+		while (cont) {
 
-                 System.out.println("Type user name: ");
-                 String name = scan2.nextLine();
-                 
-                 TempUser.setUserName(name);
+			try {
+				cont = createUserIteration(step);
+				step++;
+			} catch (TUIException e) {
+				step = e.getType();
+				System.out.println(e.getMessage());
+			}
+		}
 
-                 System.out.println("Type initials: ");
-                 String ini = scan.next();
-                 TempUser.setIni(ini);
+		try {
+			userDAO.createUser(TempUser);
+		} catch (DALException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
-                 System.out.println("Type user CPR: ");
-                 String CPR = scan.next();
-                 TempUser.setUserCpr(CPR);
-
-                 System.out.println("============================");
-                 System.out.println("|       ROLE SELECTION     |");
-                 System.out.println("============================");
-                 System.out.println("| Roles:                   |");
-                 System.out.println("|      1. Operator         |");
-                 System.out.println("|      2. Foreman          |");
-                 System.out.println("|      3. Pharmacist       |");
-                 System.out.println("|      4. Return           |");
-                 System.out.println("============================");
-
-                 int chooseRole = scan.nextInt();
-                 switch (chooseRole) {
-                     case 1:
-                         TempUser.addRole("Operator"); //set Operator
-                         break;
-                     case 2:
-                         TempUser.addRole("Foreman"); //set Foreman
-                         break;
-                     case 3:
-                         TempUser.addRole("Pharmacist"); //set Pharmacist
-                         break;
-                     case 4:
-                         System.out.println("Returning...");
-                         break display;
-                     default:
-                         System.out.println("Invalid entry");
-                         break;
-                 }
-                 break;
-             }
-             userDAO.createUser(TempUser);
-         } catch (DALException e)
-         {
-             e.printStackTrace();
-         }
-         }
-
-	 
+	
      public void updateUser()
      {
          try {
@@ -140,10 +119,10 @@ public class TUI implements ITUI
 
                  int chooseUpdate = scan.nextInt();
                  int ID;
-                 boolean a = true;
+                 boolean run = true;
                  String newRole = null;
-                 
-				switch (chooseUpdate) {
+
+                 switch (chooseUpdate) {
                      case 1:
                          System.out.println("============================");
                          System.out.println("|      UPDATE USER ID      |");
@@ -201,7 +180,7 @@ public class TUI implements ITUI
                          System.out.println("Enter user ID: ");
                          ID = scan.nextInt();
                          
-                         while(a)
+                         while(run)
                          {
                         	 System.out.println("Enter new role: ");
                              newRole = scan.nextLine();
@@ -212,7 +191,7 @@ public class TUI implements ITUI
                              }
                              else
                              {
-                            	 a = false;
+                            	 run = false;
                              }
                         	 
                          }
@@ -238,6 +217,7 @@ public class TUI implements ITUI
                          userDAO.updateUser(this.TempUser, 1);
                          
                          break;
+                         
                      case 6:
                     	 System.out.println("============================");
                          System.out.println("|    UPDATE USER PASSWORD   |");
@@ -250,6 +230,7 @@ public class TUI implements ITUI
                          userDAO.updateUser(this.TempUser, 3);
                          
                          break;
+                         
                      case 7:
                          System.out.println("Returning...");
                          break display;
@@ -263,39 +244,129 @@ public class TUI implements ITUI
      }
 
      
-     public void listUsers(){
-	    try {
-            System.out.println("============================");
-            System.out.println("|       LIST USERS         |");
-            System.out.println("============================");
+	public void listUsers() {
+		try {
+			System.out.println("============================");
+			System.out.println("|       LIST USERS         |");
+			System.out.println("============================");
 
-            userDAO.getUserList();
-            System.out.println("Bruger 1 " + userDAO.getUserList().get(1).getUserName());
-            for (int i = 0; i < userDAO.getUserList().size(); i++)
-                System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() +  "\t User name: " + userDAO.getUserList().get(i).getUserName());
+			for (int i = 0; i < userDAO.getUserList().size(); i++)
+				System.out.println("User ID: " + userDAO.getUserList().get(i).getUserId() + "\t User name: "
+						+ userDAO.getUserList().get(i).getUserName());
 
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-     }
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
+	}
+     
+	public void listID() {
+		try {
+			System.out.print("Unavailable user IDs: {");
+			for (int i = 0; i < userDAO.getUserList().size(); i++) {
+				System.out.print(userDAO.getUserList().get(i).getUserId() + ", ");
+			}
+			System.out.print("...}");
+			System.out.println();
+		} catch (DALException e) {
+			e.printStackTrace();
+		}
+	}
 
-     public void deleteUser(){
-         try {
+	public void deleteUser() {
+		try {
 
-             System.out.println("============================");
-             System.out.println("|       DELETE USER        |");
-             System.out.println("============================");
-             System.out.println("Enter user ID: ");
-             int ID = scan.nextInt();
-             userDAO.deleteUser(ID);
-             System.out.println("User has been deleted");
+			System.out.println("============================");
+			System.out.println("|       DELETE USER        |");
+			System.out.println("============================");
+			System.out.println("Enter user ID: ");
+			int ID = scan.nextInt();
+			userDAO.deleteUser(ID);
+			System.out.println("User has been deleted");
 
-         } catch (Exception e)
-         {
-             e.printStackTrace();
-         }
-     }
+		} catch (DALException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+     
+	public boolean createUserIteration(int step) throws TUIException {
+
+		boolean cont = true;
+		String errorMessage = null;
+		display:
+
+		try {
+			switch (step) {
+
+			case 1:
+				errorMessage = "Input mismatch. Please try again.\n";
+				listID();
+				System.out.println("Type userID: ");
+				int ID = scan.nextInt();
+				TempUser.setUserID(ID);
+				break;
+
+			case 2:
+				System.out.println("Type user name: ");
+				String name = scan2.nextLine();
+				TempUser.setUserName(name);
+				break;
+
+			case 3:
+				System.out.println("Type initials: ");
+				String ini = scan.next();
+				TempUser.setIni(ini);
+				break;
+
+			case 4:
+				System.out.println("Type user CPR: ");
+				String CPR = scan.next();
+				TempUser.setUserCpr(CPR);
+				break;
+
+			case 5:
+				System.out.println("============================");
+				System.out.println("|       ROLE SELECTION     |");
+				System.out.println("============================");
+				System.out.println("| Roles:                   |");
+				System.out.println("|      1. Operator         |");
+				System.out.println("|      2. Foreman          |");
+				System.out.println("|      3. Pharmacist       |");
+				System.out.println("|      4. Return           |");
+				System.out.println("============================");
+
+				int chooseRole = scan.nextInt();
+				switch (chooseRole) {
+				case 1:
+					TempUser.addRole("Operator"); // set Operator
+					break;
+				case 2:
+					TempUser.addRole("Foreman"); // set Foreman
+					break;
+				case 3:
+					TempUser.addRole("Pharmacist"); // set Pharmacist
+					break;
+				case 4:
+
+					System.out.println("Returning...");
+					break display;
+				default:
+					System.out.println("Invalid entry");
+					break;
+				}
+				break;
+
+			case 6:
+				cont = false;
+				break;
+
+			}
+		} catch (InputMismatchException e) {
+			scan.nextLine();
+			throw new TUIException(errorMessage, step);
+		} 
+		return cont;
+	}
+
 
      public void quitProgram(){}
  

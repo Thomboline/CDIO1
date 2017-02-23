@@ -64,9 +64,6 @@ public class UserDTO implements Serializable, IUserDTO
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", ini=" + ini + ", roles=" + roles + "]";
 	}
 
-
-
-
 	public void setUserCpr(String Cpr) 
 	{
 		this.CPR = Cpr;

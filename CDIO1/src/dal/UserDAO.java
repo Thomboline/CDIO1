@@ -40,7 +40,6 @@ public class UserDAO implements IUserDAO
 		    
 		    while(rs.next())
 		    {
-		        
 		          int id  = rs.getInt("UserID");
 		          String CPR = rs.getString("Cpr");
 		          String name = rs.getString("Username");
@@ -52,13 +51,6 @@ public class UserDAO implements IUserDAO
 		          TempUser.setUserName(name);
 		          TempUser.setIni(ini);
 		          TempUser.addRole(Role);
-		          
-		          /*
-		          System.out.print("ID: " + id);
-		          System.out.print(", name: " + name);
-		          System.out.print(", ini: " + ini);
-		          System.out.println(", CPR: " + CPR);
-		          */
 		     }
 		    
 		    con.close();
@@ -103,7 +95,8 @@ public class UserDAO implements IUserDAO
 		    
 		}
 		catch(SQLException ex)
-		{
+		{	
+			
 			 Logger lgr = Logger.getLogger(UserDAO.class.getName());
 		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
 		}
@@ -123,14 +116,26 @@ public class UserDAO implements IUserDAO
 			        + " values (?, ?, ?, ?, ?, ?)");
 			
 			pst.setInt(1, user.getUserId());
+			System.out.println("ID sat");
+			
 			pst.setString(2, user.getUserName());
+			System.out.println("User name sat");
+			
 		    pst.setString(3, user.getIni());
+			System.out.println("Initialer sat");
+			
 		    pst.setString(4, user.getRoles().get(0));
+			System.out.println("Role sat");
+			
 		    pst.setString(5, user.getUserCpr());
+			System.out.println("Cpr sat");
+			
 		    pst.setString(6, Password);
+			System.out.println("Password sat");
+			
 		    pst.execute();
-
-			if(user.getRoles().get(0)=="Admin")
+		
+		    if(user.getRoles().get(0)=="Admin")
 			{
 				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
 				pst.setString(1, user.getUserName());
@@ -144,7 +149,7 @@ public class UserDAO implements IUserDAO
 			}
 			else if(user.getRoles().get(0)=="Operator")
 			{
-				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
+				pst.getConnection().prepareStatement("Create user ? identified by ?");
 				pst.setString(1, user.getUserName());
 				pst.setString(2,  Password);
 				
@@ -157,11 +162,11 @@ public class UserDAO implements IUserDAO
 			}
 			else if(user.getRoles().get(0)=="Foreman")
 			{
-				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
+				pst.getConnection().prepareStatement("Create user ? identified by ?");
 				pst.setString(1, user.getUserName());
 				pst.setString(2,  Password);
 				
-				pst2.getConnection().prepareStatement("GRANT insert to '?'@'localhost'");
+				pst2.getConnection().prepareStatement("GRANT insert to ?");
 				pst2.setString(1, user.getUserName());
 				
 				pst.execute();
@@ -177,19 +182,21 @@ public class UserDAO implements IUserDAO
 				pst.execute();
 			
 			}
-			
-			
-			/*Statement st = (Statement) con.createStatement(); 
-		    st.executeUpdate("INSERT INTO `UserTable`(ID,UserName,ini,CPR,Password) VALUE ('"+user.getUserId()+"','"+user.getUserName()+"','"+user.getIni()+"',"+user.getUserCpr()+"')");
-		    */
+		    
 		    con.close();
 		   
 		}
 
 		catch (SQLException | ClassNotFoundException ex) 
-		{
-		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		{	
+			if (((SQLException)ex).getErrorCode() == DALException.duplicateErrorCode) {
+				System.out.println(DALException.duplicateData);
+			}
+			else {
+				ex.printStackTrace();
+			throw new DALException(DALException.wrongData);
+			}
+		
 		}
 	}
 	
@@ -202,7 +209,7 @@ public class UserDAO implements IUserDAO
 			
 			if(option==1)
 			{
-				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =?, Roles =?, Cpr =? " + " WHERE UserID = ? ");
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Roles = ? , Cpr = ? " + " WHERE UserID = ? ");
 			    
 			    pst.setString(1, user.getUserName());
 			    pst.setString(2, user.getIni());
@@ -213,10 +220,11 @@ public class UserDAO implements IUserDAO
 			}
 			else if (option==2)
 			{
-				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , UserID =? " + " WHERE Cpr = ? ");
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Roles = ? , UserID = ? " + " WHERE Cpr = ? ");
 			    
 			    pst.setString(1, user.getUserName());
 			    pst.setString(2, user.getIni());
+			    pst.setString(3, user.getRoles().get(0));
 			    pst.setInt(3, user.getUserId());
 			    pst.setString(4, user.getUserCpr());
 			    pst.execute();
@@ -265,9 +273,10 @@ public class UserDAO implements IUserDAO
 		}
 
 		catch (SQLException | ClassNotFoundException ex) 
-		{
-		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		{	
+			throw new DALException("");
+//		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
+//		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
 		} 
 		
@@ -280,31 +289,37 @@ public class UserDAO implements IUserDAO
 		String Characters = "0123456789._-+!?=";
 		int numberLength = (int) ((Math.random()*4) + 1);
 		
+		
 	    SecureRandom RANDOM = new SecureRandom();
 	    StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < numberLength; ++i) 
+	    
+	    for (int i = 0; i < numberLength; ++i) 
         {
 
             sb.append(UpCaseAlphabet.charAt(RANDOM.nextInt(UpCaseAlphabet.length())));
         }
-        String PW1 = sb.toString();
-        
+	    
+	    String PW1 = sb.toString();
+	    sb.setLength(0);
         for (int i = 0; i < 6; ++i) 
         {
 
             sb.append(LowCaseAlphabet.charAt(RANDOM.nextInt(LowCaseAlphabet.length())));
         }
+        
+        
         String PW2 = sb.toString();
+        sb.setLength(0);
         
         for (int i = 0; i < 4; ++i) 
         {
 
             sb.append(Characters.charAt(RANDOM.nextInt(Characters.length())));
         }
+        
         String PW3 = sb.toString();
         
-        String Password = PW1 + PW2+ PW3;
+        String Password = PW1 + PW2 + PW3;
         	
 		return Password;
 	}
