@@ -17,6 +17,7 @@ public class UserDAO implements IUserDAO
 {
 	private java.sql.Connection con = null;
 	private PreparedStatement pst = null;
+	private PreparedStatement pst2 = null;
 	private ResultSet rs = null;
 	private String driver = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://localhost:3306/cdio1";
@@ -43,11 +44,13 @@ public class UserDAO implements IUserDAO
 		          String CPR = rs.getString("Cpr");
 		          String name = rs.getString("Username");
 		          String ini = rs.getString("Ini");
+		          String Role = rs.getString("Roles");
 		          
 		          TempUser.setUserID(id);
 		          TempUser.setUserCpr(CPR);
 		          TempUser.setUserName(name);
 		          TempUser.setIni(ini);
+		          TempUser.addRole(Role);
 		     }
 		    
 		    con.close();
@@ -72,7 +75,7 @@ public class UserDAO implements IUserDAO
 		    Statement st = (Statement) con.createStatement(); 
 
 		    
-		    rs = st.executeQuery("SELECT UserID, Username, Ini, Cpr FROM personale");
+		    rs = st.executeQuery("SELECT UserID, Username, Ini, Roles, Cpr FROM personale");
 		    
 		    ArrayList<IUserDTO> UserList = new ArrayList<>();
 		    
@@ -82,6 +85,7 @@ public class UserDAO implements IUserDAO
 		    	TempUser.setUserID(rs.getInt("UserID"));
 		    	TempUser.setUserName(rs.getString("Username"));
 		    	TempUser.setIni(rs.getString("Ini"));
+		    	TempUser.addRole("Roles");
 		    	TempUser.setUserCpr(rs.getString("Cpr"));
 		    	
 		    	UserList.add(TempUser);
@@ -105,21 +109,80 @@ public class UserDAO implements IUserDAO
 		try 
 		{	
 			Class.forName(driver);
+			String Password = PasswordGenerator();
+			
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 			pst = con.prepareStatement(" insert into personale (UserID, Username, Ini, Roles, Cpr, Password)"
 			        + " values (?, ?, ?, ?, ?, ?)");
 			
 			pst.setInt(1, user.getUserId());
-			pst.setString(2, user.getUserName());
-		    pst.setString(3, user.getIni());
-		    pst.setString(4, user.getRoles().get(0));
-		    pst.setString(5, user.getUserCpr());
-		    pst.setString(6, PasswordGenerator());
-		    pst.execute();
+			System.out.println("ID sat");
 			
-			/*Statement st = (Statement) con.createStatement(); 
-		    st.executeUpdate("INSERT INTO `UserTable`(ID,UserName,ini,CPR,Password) VALUE ('"+user.getUserId()+"','"+user.getUserName()+"','"+user.getIni()+"',"+user.getUserCpr()+"')");
-		    */
+			pst.setString(2, user.getUserName());
+			System.out.println("User name sat");
+			
+		    pst.setString(3, user.getIni());
+			System.out.println("Initialer sat");
+			
+		    pst.setString(4, user.getRoles().get(0));
+			System.out.println("Role sat");
+			
+		    pst.setString(5, user.getUserCpr());
+			System.out.println("Cpr sat");
+			
+		    pst.setString(6, Password);
+			System.out.println("Password sat");
+			
+		    pst.execute();
+		
+		    if(user.getRoles().get(0)=="Admin")
+			{
+				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
+				pst.setString(1, user.getUserName());
+				pst.setString(2,  Password);
+				
+				pst2.getConnection().prepareStatement("GRANT ALL PRIVILEGES ON * . * TO '?'@'localhost'");
+				pst2.setString(1, user.getUserName());
+				
+				pst.execute();
+				pst2.execute();
+			}
+			else if(user.getRoles().get(0)=="Operator")
+			{
+				pst.getConnection().prepareStatement("Create user ? identified by ?");
+				pst.setString(1, user.getUserName());
+				pst.setString(2,  Password);
+				
+				pst2.getConnection().prepareStatement("GRANT update, delete to '?'@'localhost'");
+				pst2.setString(1, user.getUserName());
+				
+				pst.execute();
+				pst2.execute();
+				
+			}
+			else if(user.getRoles().get(0)=="Foreman")
+			{
+				pst.getConnection().prepareStatement("Create user ? identified by ?");
+				pst.setString(1, user.getUserName());
+				pst.setString(2,  Password);
+				
+				pst2.getConnection().prepareStatement("GRANT insert to ?");
+				pst2.setString(1, user.getUserName());
+				
+				pst.execute();
+				pst2.execute();
+				
+			}
+			else if(user.getRoles().get(0)=="Pharmacist")
+			{
+				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
+				pst.setString(1, user.getUserName());
+				pst.setString(2,  Password);
+			
+				pst.execute();
+			
+			}
+		    
 		    con.close();
 		   
 		}
@@ -130,6 +193,7 @@ public class UserDAO implements IUserDAO
 				System.out.println(DALException.duplicateData);
 			}
 			else {
+				ex.printStackTrace();
 			throw new DALException(DALException.wrongData);
 			}
 		
@@ -145,20 +209,22 @@ public class UserDAO implements IUserDAO
 			
 			if(option==1)
 			{
-				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Cpr =? " + " WHERE UserID = ? ");
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Roles = ? , Cpr = ? " + " WHERE UserID = ? ");
 			    
 			    pst.setString(1, user.getUserName());
 			    pst.setString(2, user.getIni());
-			    pst.setString(3, user.getUserCpr());
-			    pst.setInt(4, user.getUserId());
+			    pst.setString(3, user.getRoles().get(0));
+			    pst.setString(4, user.getUserCpr());
+			    pst.setInt(5, user.getUserId());
 			    pst.execute();
 			}
 			else if (option==2)
 			{
-				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , UserID =? " + " WHERE Cpr = ? ");
+				pst = con.prepareStatement("UPDATE personale SET Username = ? , Ini =? , Roles = ? , UserID = ? " + " WHERE Cpr = ? ");
 			    
 			    pst.setString(1, user.getUserName());
 			    pst.setString(2, user.getIni());
+			    pst.setString(3, user.getRoles().get(0));
 			    pst.setInt(3, user.getUserId());
 			    pst.setString(4, user.getUserCpr());
 			    pst.execute();
@@ -195,7 +261,12 @@ public class UserDAO implements IUserDAO
 			
 		    pst = con.prepareStatement("delete from personale where UserID = ?");
 		    pst.setInt(1, userId);
+		    
+		    pst2.getConnection().prepareStatement("Drop user = ?");
+		    pst2.setInt(1, userId);
+		    
 		    pst.execute();
+		    pst2.execute();
 		    
 		    con.close();
 		   
@@ -213,27 +284,42 @@ public class UserDAO implements IUserDAO
 	
 	public String PasswordGenerator()
 	{
-		String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String UpCaseAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String LowCaseAlphabet = "abcdefghijklmnopqrstuvwxyz";
 		String Characters = "0123456789._-+!?=";
+		int numberLength = (int) ((Math.random()*4) + 1);
+		
+		
 	    SecureRandom RANDOM = new SecureRandom();
-	    
 	    StringBuilder sb = new StringBuilder();
+	    
+	    for (int i = 0; i < numberLength; ++i) 
+        {
 
+            sb.append(UpCaseAlphabet.charAt(RANDOM.nextInt(UpCaseAlphabet.length())));
+        }
+	    
+	    String PW1 = sb.toString();
+	    sb.setLength(0);
         for (int i = 0; i < 6; ++i) 
         {
 
-            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+            sb.append(LowCaseAlphabet.charAt(RANDOM.nextInt(LowCaseAlphabet.length())));
         }
-        String PW1 = sb.toString();
+        
+        
+        String PW2 = sb.toString();
+        sb.setLength(0);
         
         for (int i = 0; i < 4; ++i) 
         {
 
             sb.append(Characters.charAt(RANDOM.nextInt(Characters.length())));
         }
-        String PW2 = sb.toString();
         
-        String Password = PW1 + PW2;
+        String PW3 = sb.toString();
+        
+        String Password = PW1 + PW2 + PW3;
         	
 		return Password;
 	}

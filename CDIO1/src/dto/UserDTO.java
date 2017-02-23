@@ -43,9 +43,9 @@ public class UserDTO implements Serializable, IUserDTO
 	{
 		return roles;
 	}
-	public void setRoles(List<String> roles) 
+	public void setRoles(String roles) 
 	{
-		this.roles = roles;
+		this.roles.set(0, roles);
 	}
 	
 	public void addRole(String role)
@@ -63,9 +63,6 @@ public class UserDTO implements Serializable, IUserDTO
 	{
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", ini=" + ini + ", roles=" + roles + "]";
 	}
-
-
-
 
 	public void setUserCpr(String Cpr) 
 	{
