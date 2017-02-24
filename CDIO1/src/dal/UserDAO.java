@@ -35,7 +35,6 @@ public class UserDAO implements IUserDAO
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 		    Statement st = (Statement) con.createStatement(); 
 
-
 		    rs = st.executeQuery("SELECT * FROM personale where UserID = " + userId + "");
 		    
 		    while(rs.next())
@@ -66,7 +65,6 @@ public class UserDAO implements IUserDAO
 		
 	}
 
-	
 	public List<IUserDTO> getUserList() throws DALException 
 	{
 		try 
@@ -137,49 +135,52 @@ public class UserDAO implements IUserDAO
 		
 		    if(user.getRoles().get(0)=="Admin")
 			{
-				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
-				pst.setString(1, user.getUserName());
-				pst.setString(2,  Password);
-				
-				pst2.getConnection().prepareStatement("GRANT ALL PRIVILEGES ON * . * TO '?'@'localhost'");
-				pst2.setString(1, user.getUserName());
-				
-				pst.execute();
-				pst2.execute();
+				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+		    	Statement st = (Statement) con.createStatement(); 
+		    	System.out.println(s);
+		        st.execute(s);
+		        
+				String p = "GRANT all privileges on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+				System.out.println(p);
+				Statement st2 = (Statement) con.createStatement(); 
+		        st2.execute(p);
 			}
-			else if(user.getRoles().get(0)=="Operator")
+			else if(user.getRoles().get(0).equals("Operator"))
 			{
-				pst.getConnection().prepareStatement("Create user ? identified by ?");
-				pst.setString(1, user.getUserName());
-				pst.setString(2,  Password);
-				
-				pst2.getConnection().prepareStatement("GRANT update, delete to '?'@'localhost'");
-				pst2.setString(1, user.getUserName());
-				
-				pst.execute();
-				pst2.execute();
-				
+				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+		    	Statement st = (Statement) con.createStatement(); 
+		    	System.out.println(s);
+		        st.execute(s);
+		        
+				String p = "GRANT update, delete on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+				System.out.println(p);
+				Statement st2 = (Statement) con.createStatement(); 
+		        st2.execute(p);
 			}
 			else if(user.getRoles().get(0)=="Foreman")
 			{
-				pst.getConnection().prepareStatement("Create user ? identified by ?");
-				pst.setString(1, user.getUserName());
-				pst.setString(2,  Password);
-				
-				pst2.getConnection().prepareStatement("GRANT insert to ?");
-				pst2.setString(1, user.getUserName());
-				
-				pst.execute();
-				pst2.execute();
+				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+		    	Statement st = (Statement) con.createStatement(); 
+		    	System.out.println(s);
+		        st.execute(s);
+		        
+				String p = "GRANT insert on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+				System.out.println(p);
+				Statement st2 = (Statement) con.createStatement(); 
+		        st2.execute(p);
 				
 			}
 			else if(user.getRoles().get(0)=="Pharmacist")
 			{
-				pst.getConnection().prepareStatement("Create user ‘?’@’localhost’ identified by ‘?’");
-				pst.setString(1, user.getUserName());
-				pst.setString(2,  Password);
-			
-				pst.execute();
+				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+		    	Statement st = (Statement) con.createStatement(); 
+		    	System.out.println(s);
+		        st.execute(s);
+		        
+				String p = "GRANT select on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+				System.out.println(p);
+				Statement st2 = (Statement) con.createStatement(); 
+		        st2.execute(p);
 			
 			}
 		    
@@ -242,7 +243,7 @@ public class UserDAO implements IUserDAO
 		   
 		}
 
-		catch (SQLException ex) 
+		catch (SQLException | IndexOutOfBoundsException ex) 
 		{
 		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
 		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -256,18 +257,36 @@ public class UserDAO implements IUserDAO
 	{
 		try 
 		{
+			
 			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
 			
-		    pst = con.prepareStatement("delete from personale where UserID = ?");
-		    pst.setInt(1, userId);
-		    
-		    pst2.getConnection().prepareStatement("Drop user = ?");
-		    pst2.setInt(1, userId);
-		    
-		    pst.execute();
-		    pst2.execute();
-		    
+			String s = "delete from personale where UserID = " + userId + ";";
+	    	Statement st = (Statement) con.createStatement(); 
+	    	System.out.println(s);
+	        st.execute(s);
+	        
+	    	this.TempUser = getUser(userId);
+	    	String name = TempUser.getUserName();
+	    	System.out.println(name);
+	    	
+	        String p = "DROP USER " + "\"" + name + "\"@\"localhost\"";
+	        System.out.println(p);
+	        Statement st2 = (Statement) con.createStatement();
+	        st2.execute(p);
+	        
+	        
+//			String name = getUser(userId).getUserName();
+//			
+//		    pst = con.prepareStatement("delete from personale where UserID = ?");
+//		    pst.setInt(1, userId);
+//		    
+//		    pst2.getConnection().prepareStatement("Drop user = ?");
+//		    pst2.setInt(1, userId);
+//		    
+//		    pst.execute();
+//		    pst2.execute();
+//		    
 		    con.close();
 		   
 		}
@@ -323,5 +342,5 @@ public class UserDAO implements IUserDAO
         	
 		return Password;
 	}
-
 }
+

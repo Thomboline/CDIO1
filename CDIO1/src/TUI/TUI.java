@@ -111,10 +111,11 @@ public class TUI implements ITUI
                  System.out.println("| Updates:                 |");
                  System.out.println("|      1. User ID          |");
                  System.out.println("|      2. User name        |");
-                 System.out.println("|      3. User initials    |");
-                 System.out.println("|      4. User CPR         |");
-                 System.out.println("|      5. User Password    |");
-                 System.out.println("|      6. Return           |");
+                 System.out.println("|      3. User Initials    |");
+                 System.out.println("|      4. User Role        |");
+                 System.out.println("|      5. User CPR         |");
+                 System.out.println("|      6. User Password    |");
+                 System.out.println("|      7. Return           |");
                  System.out.println("============================");
 
                  int chooseUpdate = scan.nextInt();
@@ -123,125 +124,125 @@ public class TUI implements ITUI
                  String newRole = null;
 
                  switch (chooseUpdate) {
-                     case 1:
-                         System.out.println("============================");
-                         System.out.println("|      UPDATE USER ID      |");
-                         System.out.println("============================");
+                 case 1:
+                     System.out.println("============================");
+                     System.out.println("|      UPDATE USER ID      |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter user ID: ");
+                     ID = scan.nextInt();
+                     
+                     System.out.println("Enter new user ID: ");
+                     int newID = scan.nextInt();
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     this.TempUser.setUserID(newID);
+                     
+                     userDAO.updateUser(this.TempUser, 2);
+                     
+                     break;
+                 case 2:
+                     System.out.println("============================");
+                     System.out.println("|     UPDATE USER NAME     |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter user ID: ");
+                     ID = scan.nextInt();
+                     
+                     System.out.println("Enter new user name: ");
+                     String newName = scan.next();
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     this.TempUser.setUserName(newName);
+                     userDAO.updateUser(this.TempUser, 1);
+                     
+                     break;
+                 case 3:
+                     System.out.println("============================");
+                     System.out.println("|   UPDATE USER INITIALS   |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter user ID: ");
+                     ID = scan.nextInt();
+                     
+                     System.out.println("Enter new user initials: ");
+                     String newIni = scan.next();
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     this.TempUser.setIni(newIni);
+                     userDAO.updateUser(this.TempUser, 1);
+                     
+                     break;
+                 case 4:
+                	 System.out.println("============================");
+                     System.out.println("|        UPDATE ROLE       |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter user ID: ");
+                     ID = scan.nextInt();
+                     
+                     while(run)
+                     {
+                    	 System.out.println("Enter new role: ");
+                         newRole = scan.nextLine();
                          
-                         System.out.println("Enter user ID: ");
-                         ID = scan.nextInt();
-                         
-                         System.out.println("Enter new user ID: ");
-                         int newID = scan.nextInt();
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         this.TempUser.setUserID(newID);
-                         
-                         userDAO.updateUser(this.TempUser, 2);
-                         
-                         break;
-                     case 2:
-                         System.out.println("============================");
-                         System.out.println("|     UPDATE USER NAME     |");
-                         System.out.println("============================");
-                         
-                         System.out.println("Enter user ID: ");
-                         ID = scan.nextInt();
-                         
-                         System.out.println("Enter new user name: ");
-                         String newName = scan.next();
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         this.TempUser.setUserName(newName);
-                         userDAO.updateUser(this.TempUser, 1);
-                         
-                         break;
-                     case 3:
-                         System.out.println("============================");
-                         System.out.println("|   UPDATE USER INITIALS   |");
-                         System.out.println("============================");
-                         
-                         System.out.println("Enter user ID: ");
-                         ID = scan.nextInt();
-                         
-                         System.out.println("Enter new user initials: ");
-                         String newIni = scan.next();
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         this.TempUser.setIni(newIni);
-                         userDAO.updateUser(this.TempUser, 1);
-                         
-                         break;
-                     case 4:
-                    	 System.out.println("============================");
-                         System.out.println("|        UPDATE ROLE       |");
-                         System.out.println("============================");
-                         
-                         System.out.println("Enter user ID: ");
-                         ID = scan.nextInt();
-                         
-                         while(run)
+                         if(newRole != "Admin"|| newRole != "Operator" || newRole != "Foreman" || newRole != "Pharmacist")
                          {
-                        	 System.out.println("Enter new role: ");
-                             newRole = scan.nextLine();
-                             
-                             if(newRole != "Admin"|| newRole != "Operator" || newRole != "Foreman" || newRole != "Pharmacist")
-                             {
-                            	 System.out.println("Unknown role, please try again!");
-                             }
-                             else
-                             {
-                            	 run = false;
-                             }
-                        	 
+                        	 System.out.println("Unknown role, please try again!");
                          }
-                         
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         this.TempUser.setRoles(newRole);
-                         userDAO.updateUser(this.TempUser, 1);
+                         else
+                         {
+                        	 run = false;
+                         }
                     	 
-                     case 5:
-                         System.out.println("============================");
-                         System.out.println("|      UPDATE USER CPR     |");
-                         System.out.println("============================");
-                         
-                         System.out.println("Enter User ID: ");
-                         ID = scan.nextInt();
-                         
-                         System.out.println("Enter new user CPR: ");
-                         String newCPR = scan.next();
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         this.TempUser.setUserCpr(newCPR);
-                         userDAO.updateUser(this.TempUser, 1);
-                         
-                         break;
-                         
-                     case 6:
-                    	 System.out.println("============================");
-                         System.out.println("|    UPDATE USER PASSWORD   |");
-                         System.out.println("============================");
-                         
-                         System.out.println("Enter User ID: ");
-                         ID = scan.nextInt();
-                         
-                         this.TempUser = userDAO.getUser(ID);
-                         userDAO.updateUser(this.TempUser, 3);
-                         
-                         break;
-                         
-                     case 7:
-                         System.out.println("Returning...");
-                         break display;
-                 }
-
+                     }
+                     
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     this.TempUser.setRoles(newRole);
+                     userDAO.updateUser(this.TempUser, 1);
+                	 
+                 case 5:
+                     System.out.println("============================");
+                     System.out.println("|      UPDATE USER CPR     |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter User ID: ");
+                     ID = scan.nextInt();
+                     
+                     System.out.println("Enter new user CPR: ");
+                     String newCPR = scan.next();
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     this.TempUser.setUserCpr(newCPR);
+                     userDAO.updateUser(this.TempUser, 1);
+                     
+                     break;
+                     
+                 case 6:
+                	 System.out.println("============================");
+                     System.out.println("|    UPDATE USER PASSWORD   |");
+                     System.out.println("============================");
+                     
+                     System.out.println("Enter User ID: ");
+                     ID = scan.nextInt();
+                     
+                     this.TempUser = userDAO.getUser(ID);
+                     userDAO.updateUser(this.TempUser, 3);
+                     
+                     break;
+                     
+                 case 7:
+                     System.out.println("Returning...");
+                     break display;
              }
-         } catch (Exception e)
-         {
-             e.printStackTrace();
+
          }
+     } catch (Exception e)
+     {
+         e.printStackTrace();
      }
+ }
 
      
 	public void listUsers() {
