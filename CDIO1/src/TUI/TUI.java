@@ -77,7 +77,7 @@ public class TUI implements ITUI
 
 		System.out.println("============================");
 		System.out.println("|        CREATE USER       |");
-		System.out.println("============================\n");
+		System.out.println("============================");
 		
 		while (cont) {
 
@@ -110,11 +110,12 @@ public class TUI implements ITUI
                  System.out.println("============================");
                  System.out.println("| Updates:                 |");
                  System.out.println("|      1. User ID          |");
-                 System.out.println("|      2. User name        |");
-                 System.out.println("|      3. User initials    |");
-                 System.out.println("|      4. User CPR         |");
-                 System.out.println("|      5. User Password    |");
-                 System.out.println("|      6. Return           |");
+                 System.out.println("|      2. User Name        |");
+                 System.out.println("|      3. User Initials    |");
+                 System.out.println("|      4. User Role        |");
+                 System.out.println("|      5. User CPR         |");
+                 System.out.println("|      6. User Password    |");
+                 System.out.println("|      7. Return           |");
                  System.out.println("============================");
 
                  int chooseUpdate = scan.nextInt();
