@@ -59,9 +59,11 @@ public class TUI implements ITUI
                      break;
              }
         
-			} catch (InputMismatchException e) {
-				System.out.println("Input mismatch. Please try again.");
-	   		} 
+			} catch (TUIException e) {
+				e.getMessage();
+	   		} catch (InputMismatchException e) {
+	   			System.out.println("Input mismatch. Please try again.");
+	   		}
 			
 			scan.nextLine();
 			
@@ -97,8 +99,7 @@ public class TUI implements ITUI
 		}
 	}
 
-	
-     public void updateUser()
+     public void updateUser() throws TUIException
      {
          try {
 
@@ -197,7 +198,6 @@ public class TUI implements ITUI
                     	 
                      }
                      
-                     
                      this.TempUser = userDAO.getUser(ID);
                      this.TempUser.setRoles(newRole);
                      userDAO.updateUser(this.TempUser, 1);
@@ -236,15 +236,15 @@ public class TUI implements ITUI
                      System.out.println("Returning...");
                      break display;
              }
-
          }
-     } catch (Exception e)
-     {
-         e.printStackTrace();
+     } catch (InputMismatchException e)
+     {		String errorMessage = "Input mismatch. Please try again.";
+         throw new TUIException(errorMessage, e);
+     } catch (DALException e) {
+    	 System.out.println(e.getMessage());
      }
  }
 
-     
 	public void listUsers() {
 		try {
 			System.out.println("============================");
@@ -367,7 +367,6 @@ public class TUI implements ITUI
 		} 
 		return cont;
 	}
-
 
      public void quitProgram(){}
  

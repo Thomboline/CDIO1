@@ -22,7 +22,8 @@ public interface IUserDAO
 				+ "\nInitials: All characters. Max 4 characters."
 				+ "\nCPR: {0, 1, 2..... 9}. Exactly 11 characters are required. Syntax: 12345678-1234"
 				+ "\nPlease try again.\n";
-		
+		public static final String dataDoesNotExist = "This data does not exist.";
+		public static final String unidentifiedException = "Somehing went wrong. Please try again.";
 		public DALException(String msg, Throwable e) 
 		{
 			super(msg,e);

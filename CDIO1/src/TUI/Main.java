@@ -1,6 +1,5 @@
 package TUI;
 
-import dal.IUserDAO.DALException;
 import dal.UserDAO;
 
 public class Main 

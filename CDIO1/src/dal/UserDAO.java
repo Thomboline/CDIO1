@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,10 +60,8 @@ public class UserDAO implements IUserDAO
 		}
 		catch(Exception e)
 		{
-			JOptionPane.showMessageDialog(null, "Sorry! Connection Failed");
-		}
-		return null;
-		
+			throw new DALException(DALException.dataDoesNotExist);
+		}		
 	}
 
 	public List<IUserDTO> getUserList() throws DALException 
@@ -92,13 +91,10 @@ public class UserDAO implements IUserDAO
 		    return UserList;
 		    
 		}
-		catch(SQLException ex)
+		catch(SQLException | ArrayIndexOutOfBoundsException ex)
 		{	
-			
-			 Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+			throw new DALException(DALException.dataDoesNotExist);
 		}
-		return null;
 	}
 
 	
@@ -132,62 +128,9 @@ public class UserDAO implements IUserDAO
 			System.out.println("Password sat");
 			
 		    pst.execute();
-		
-		    if(user.getRoles().get(0)=="Admin")
-			{
-				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
-		    	Statement st = (Statement) con.createStatement(); 
-		    	System.out.println(s);
-		        st.execute(s);
-		        
-				String p = "GRANT all privileges on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
-				System.out.println(p);
-				Statement st2 = (Statement) con.createStatement(); 
-		        st2.execute(p);
-			}
-			else if(user.getRoles().get(0).equals("Operator"))
-			{
-				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
-		    	Statement st = (Statement) con.createStatement(); 
-		    	System.out.println(s);
-		        st.execute(s);
-		        
-				String p = "GRANT update, delete on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
-				System.out.println(p);
-				Statement st2 = (Statement) con.createStatement(); 
-		        st2.execute(p);
-			}
-			else if(user.getRoles().get(0)=="Foreman")
-			{
-				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
-		    	Statement st = (Statement) con.createStatement(); 
-		    	System.out.println(s);
-		        st.execute(s);
-		        
-				String p = "GRANT insert on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
-				System.out.println(p);
-				Statement st2 = (Statement) con.createStatement(); 
-		        st2.execute(p);
-				
-			}
-			else if(user.getRoles().get(0)=="Pharmacist")
-			{
-				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
-		    	Statement st = (Statement) con.createStatement(); 
-		    	System.out.println(s);
-		        st.execute(s);
-		        
-				String p = "GRANT select on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
-				System.out.println(p);
-				Statement st2 = (Statement) con.createStatement(); 
-		        st2.execute(p);
-			
-			}
 		    
 		    con.close();
-		   
 		}
-
 		catch (SQLException | ClassNotFoundException ex) 
 		{	
 			if (((SQLException)ex).getErrorCode() == DALException.duplicateErrorCode) {
@@ -197,9 +140,64 @@ public class UserDAO implements IUserDAO
 				ex.printStackTrace();
 			throw new DALException(DALException.wrongData);
 			}
-		
 		}
 	}
+		
+//--------EKSTRA KODE TIL DATABASE BRUGEROPRETTELSE---------------
+//--------OPRETTER BRUGER, GIVER PRIVILEGIER----------------------
+//--------KODE ER VELFUNGERENDE. KASSERET DA DROP IKKE VIRKER-----
+//--------SKAL IMPLEMENTERES I createUser(); i CDIO2--------------
+		
+//		    if(user.getRoles().get(0)=="Admin")
+//			{
+//				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+//		    	Statement st = (Statement) con.createStatement(); 
+//		    	System.out.println(s);
+//		        st.execute(s);
+//		        
+//				String p = "GRANT all privileges on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+//				System.out.println(p);
+//				Statement st2 = (Statement) con.createStatement(); 
+//		        st2.execute(p);
+//			}
+//			else if(user.getRoles().get(0).equals("Operator"))
+//			{
+//				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+//		    	Statement st = (Statement) con.createStatement(); 
+//		    	System.out.println(s);
+//		        st.execute(s);
+//		        
+//				String p = "GRANT update, delete on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+//				System.out.println(p);
+//				Statement st2 = (Statement) con.createStatement(); 
+//		        st2.execute(p);
+//			}
+//			else if(user.getRoles().get(0)=="Foreman")
+//			{
+//				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+//		    	Statement st = (Statement) con.createStatement(); 
+//		    	System.out.println(s);
+//		        st.execute(s);
+//		        
+//				String p = "GRANT insert on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+//				System.out.println(p);
+//				Statement st2 = (Statement) con.createStatement(); 
+//		        st2.execute(p);
+//				
+//			}
+//			else if(user.getRoles().get(0)=="Pharmacist")
+//			{
+//				String s = "Create user \"" + user.getUserName() + "\"@\"localhost\" identified by \"" + Password + "\";";
+//		    	Statement st = (Statement) con.createStatement(); 
+//		    	System.out.println(s);
+//		        st.execute(s);
+//		        
+//				String p = "GRANT select on *.* TO \"" + user.getUserName() + "\"@\"localhost\";";
+//				System.out.println(p);
+//				Statement st2 = (Statement) con.createStatement(); 
+//		        st2.execute(p);
+//			
+//			}
 	
 	
 	public void updateUser(IUserDTO user, int option) throws DALException
@@ -238,17 +236,17 @@ public class UserDAO implements IUserDAO
 			    pst.setInt(2, user.getUserId());
 			    pst.execute();
 			}
-		    
 		    con.close();
-		   
 		}
 
 		catch (SQLException | IndexOutOfBoundsException ex) 
 		{
-		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
+		     throw new DALException(DALException.dataDoesNotExist);
 
-		} 
+		} catch (InputMismatchException e) {
+			
+			System.out.println("Invalid input.");
+		}
 		
 	}
 
@@ -257,64 +255,47 @@ public class UserDAO implements IUserDAO
 	{
 		try 
 		{
-			
 			Class.forName(driver);
 			con = DriverManager.getConnection(this.url, this.user, this.password);
-			
 			String s = "delete from personale where UserID = " + userId + ";";
 	    	Statement st = (Statement) con.createStatement(); 
 	    	System.out.println(s);
 	        st.execute(s);
-	        
-	    	this.TempUser = getUser(userId);
-	    	String name = TempUser.getUserName();
-	    	System.out.println(name);
-	    	
-	        String p = "DROP USER " + "\"" + name + "\"@\"localhost\"";
-	        System.out.println(p);
-	        Statement st2 = (Statement) con.createStatement();
-	        st2.execute(p);
-	        
-	        
-//			String name = getUser(userId).getUserName();
-//			
-//		    pst = con.prepareStatement("delete from personale where UserID = ?");
-//		    pst.setInt(1, userId);
-//		    
-//		    pst2.getConnection().prepareStatement("Drop user = ?");
-//		    pst2.setInt(1, userId);
-//		    
-//		    pst.execute();
-//		    pst2.execute();
-//		    
 		    con.close();
-		   
 		}
-
 		catch (SQLException | ClassNotFoundException ex) 
 		{	
-			throw new DALException("");
-//		     Logger lgr = Logger.getLogger(UserDAO.class.getName());
-//		     lgr.log(Level.SEVERE, ex.getMessage(), ex);
-
+			throw new DALException(DALException.dataDoesNotExist);
 		} 
-		
 	}
+
+//--------EKSTRA KODE TIL AT SLETTE DATABASE BRUGER --------------
+//--------VIRKER IKKE. SKAL ÆNDRES--------------------------------
+//--------SKAL IMPLEMENTERES I deleteUser(); I CDIO2--------------
 	
-	public String PasswordGenerator()
-	{
+//	this.TempUser = getUser(userId);
+//	String name = TempUser.getUserName();
+//	System.out.println(name);
+//	
+//    String p = "DROP USER \"" + name + "\"@\"localhost\";";
+//    System.out.println(p);
+//    Statement st2 = (Statement) con.createStatement();
+//    st2.executeUpdate(p);
+	
+	public String PasswordGenerator() throws DALException
+	{	
+		try
+		{
 		String UpCaseAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String LowCaseAlphabet = "abcdefghijklmnopqrstuvwxyz";
 		String Characters = "0123456789._-+!?=";
 		int numberLength = (int) ((Math.random()*4) + 1);
-		
 		
 	    SecureRandom RANDOM = new SecureRandom();
 	    StringBuilder sb = new StringBuilder();
 	    
 	    for (int i = 0; i < numberLength; ++i) 
         {
-
             sb.append(UpCaseAlphabet.charAt(RANDOM.nextInt(UpCaseAlphabet.length())));
         }
 	    
@@ -322,25 +303,26 @@ public class UserDAO implements IUserDAO
 	    sb.setLength(0);
         for (int i = 0; i < 6; ++i) 
         {
-
             sb.append(LowCaseAlphabet.charAt(RANDOM.nextInt(LowCaseAlphabet.length())));
         }
-        
         
         String PW2 = sb.toString();
         sb.setLength(0);
         
         for (int i = 0; i < 4; ++i) 
         {
-
             sb.append(Characters.charAt(RANDOM.nextInt(Characters.length())));
         }
         
         String PW3 = sb.toString();
-        
         String Password = PW1 + PW2 + PW3;
-        	
-		return Password;
+
+        return Password;
+		} 
+		catch(Exception e)
+		{
+			throw new DALException(DALException.unidentifiedException);
+        }
 	}
 }
 
